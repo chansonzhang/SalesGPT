@@ -28,6 +28,9 @@ def setup_knowledge_base(product_catalog: str = None):
     )
     return knowledge_base
 
+def book(*args,**kwargs):
+    print('call book ...')
+    print(*args,**kwargs)
 
 def get_tools(knowledge_base):
     # we only use one tool for now, but this is highly extensible!
@@ -35,8 +38,13 @@ def get_tools(knowledge_base):
         Tool(
             name="ProductSearch",
             func=knowledge_base.run,
-            description="useful for when you need to answer questions about product information",
-        )
+            description="useful for when you need to answer questions about product information.",
+        ),
+        Tool(
+            name="FlightBookingAPI",
+            func=book,
+            description="useful for when you need to book a flight.",
+        ),
     ]
 
     return tools

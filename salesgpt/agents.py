@@ -13,8 +13,8 @@ from litellm import acompletion
 from salesgpt.chains import SalesConversationChain, StageAnalyzerChain
 from salesgpt.logger import time_logger
 from salesgpt.parsers import SalesConvoOutputParser
-from salesgpt.prompts import SALES_AGENT_TOOLS_PROMPT
-from salesgpt.stages import CONVERSATION_STAGES
+from salesgpt.prompts_airline import SALES_AGENT_TOOLS_PROMPT
+from salesgpt.prompts_airline import CONVERSATION_STATES_MAP as CONVERSATION_STAGES
 from salesgpt.templates import CustomPromptTemplateForTools
 from salesgpt.tools import get_tools, setup_knowledge_base
 
@@ -46,11 +46,11 @@ class SalesGPT(Chain, BaseModel):
 
     use_tools: bool = False
     salesperson_name: str = "Ted Lasso"
-    salesperson_role: str = "Business Development Representative"
-    company_name: str = "Sleep Haven"
-    company_business: str = "Sleep Haven is a premium mattress company that provides customers with the most comfortable and supportive sleeping experience possible. We offer a range of high-quality mattresses, pillows, and bedding accessories that are designed to meet the unique needs of our customers."
-    company_values: str = "Our mission at Sleep Haven is to help people achieve a better night's sleep by providing them with the best possible sleep solutions. We believe that quality sleep is essential to overall health and well-being, and we are committed to helping our customers achieve optimal sleep by offering exceptional products and customer service."
-    conversation_purpose: str = "find out whether they are looking to achieve better sleep via buying a premier mattress."
+    salesperson_role: str = "Airline Virtual Agent"
+    company_name: str = "Cicada Airline"
+    company_business: str = "Cicada Airline is a premium airline company that provides customers with the most comfortable and supportive flying experience possible. We offer a range of high-quality flights, and in-flight entertainment that are designed to meet the unique needs of our customers."
+    company_values: str = "Customer is first."
+    conversation_purpose: str = "Serving the user with questions or flight booking requirement."
     conversation_type: str = "call"
 
     def retrieve_conversation_stage(self, key):
@@ -230,6 +230,7 @@ class SalesGPT(Chain, BaseModel):
 
         # Generate agent's utterance
         # if use tools
+        print("Current stage: "+self.current_conversation_stage)
         if self.use_tools:
             ai_message = self.sales_agent_executor.run(
                 input="",
@@ -318,6 +319,7 @@ class SalesGPT(Chain, BaseModel):
                     "conversation_purpose",
                     "conversation_type",
                     "conversation_history",
+                    "conversation_stage",
                 ],
             )
             llm_chain = LLMChain(llm=llm, prompt=prompt, verbose=verbose)

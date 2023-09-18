@@ -1,8 +1,6 @@
 import argparse
 import json
-import os
 
-from salesgpt.agents import SalesGPT
 from langchain.chat_models import ChatLiteLLM
 from dotenv import load_dotenv
 load_dotenv() # loads .env file 
@@ -42,8 +40,8 @@ if __name__ == "__main__":
             sales_agent = SalesGPT.from_llm(
                 llm,
                 use_tools=USE_TOOLS,
-                product_catalog="examples/sample_product_catalog.txt",
-                salesperson_name="Ted Lasso",
+                product_catalog="examples/sample_airline_faq.txt",
+                salesperson_name="Chen",
                 verbose=verbose,
             )
         else:
@@ -62,6 +60,7 @@ if __name__ == "__main__":
         if cnt == max_num_turns:
             print("Maximum number of turns reached - ending the conversation.")
             break
+        sales_agent.determine_conversation_stage()
         sales_agent.step()
 
         # end conversation
